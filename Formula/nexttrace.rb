@@ -21,7 +21,12 @@ class Nexttrace < Formula
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_linux_arm64"
       sha256 "0ceb4856b24a62ddfb949cb9a5f3ff4475bace3d47bcca29398a14349630380b"
-    elsif Hardware::CPU.arm?\n      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_linux_armv7"\n      sha256 "3a2dbb4a771e3b9e4481a85c50630e74544c1057a2044d58002110ee7de342df"\n    else\n      odie "Unsupported Linux architecture for nexttrace"\n    end
+    elsif Hardware::CPU.arm?
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_linux_armv7"
+      sha256 "3a2dbb4a771e3b9e4481a85c50630e74544c1057a2044d58002110ee7de342df"
+    else
+      odie "Unsupported Linux architecture for nexttrace"
+    end
   end
 
   def install
