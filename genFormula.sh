@@ -34,7 +34,8 @@ version="${tag_name#v}"
 base_url="https://github.com/${REPO}/releases/download/${tag_name}"
 
 declare -A assets=(
-  [darwin_universal]="${base_url}/nexttrace_darwin_universal"
+  [darwin_amd64]="${base_url}/nexttrace_darwin_amd64"
+  [darwin_arm64]="${base_url}/nexttrace_darwin_arm64"
   [linux_amd64]="${base_url}/nexttrace_linux_amd64"
   [linux_arm64]="${base_url}/nexttrace_linux_arm64"
 )
@@ -77,8 +78,15 @@ class Nexttrace < Formula
   end
 
   on_macos do
-    url "${assets[darwin_universal]}"
-    sha256 "${shas[darwin_universal]}"
+    if Hardware::CPU.intel?
+      url "${assets[darwin_amd64]}"
+      sha256 "${shas[darwin_amd64]}"
+    elsif Hardware::CPU.arm?
+      url "${assets[darwin_arm64]}"
+      sha256 "${shas[darwin_arm64]}"
+    else
+      odie "Unsupported macOS architecture for nexttrace"
+    end
   end
 
   on_linux do
