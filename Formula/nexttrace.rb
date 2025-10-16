@@ -10,8 +10,15 @@ class Nexttrace < Formula
   end
 
   on_macos do
-    url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_darwin_universal"
-    sha256 "1049362a4c21c103ee84689804f6dd8b4130a985ebab9c203df1a833584d1c50"
+    if Hardware::CPU.intel?
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_darwin_amd64"
+      sha256 "447c6c3ae21a7ca73ee5a7d49369d5bf4398818c2a128424f6afd927eeb2f1c3"
+    elsif Hardware::CPU.arm?
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.4.3-rc.1/nexttrace_darwin_arm64"
+      sha256 "573456406e0545acc6a24d390083cbc68b229fc5621f99e7eee721e730238a2e"
+    else
+      odie "Unsupported macOS architecture for nexttrace"
+    end
   end
 
   on_linux do
