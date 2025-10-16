@@ -58,9 +58,10 @@ done
 
 mkdir -p "$(dirname "${FORMULA_PATH}")"
 
-linux_arm_block="    else\n      odie \"Unsupported Linux architecture for nexttrace\"\n    end"
+printf -v linux_arm_block '    else\n      odie "Unsupported Linux architecture for nexttrace"\n    end'
 if [[ -n "${shas[linux_armv7]:-}" ]]; then
-  linux_arm_block="    elsif Hardware::CPU.arm?\n      url \"${assets[linux_armv7]}\"\n      sha256 \"${shas[linux_armv7]}\"\n    else\n      odie \"Unsupported Linux architecture for nexttrace\"\n    end"
+  printf -v linux_arm_block '    elsif Hardware::CPU.arm?\n      url "%s"\n      sha256 "%s"\n    else\n      odie "Unsupported Linux architecture for nexttrace"\n    end' \
+    "${assets[linux_armv7]}" "${shas[linux_armv7]}"
 fi
 
 cat >"${FORMULA_PATH}" <<EOF
