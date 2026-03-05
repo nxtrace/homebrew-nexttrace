@@ -1,7 +1,7 @@
 class Nexttrace < Formula
   desc "An open source visual route tracking CLI tool"
   homepage "https://github.com/nxtrace/NTrace-V1"
-  version "1.5.1-rc.1"
+  version "1.5.2-beta.0"
   license "GPL-3.0"
 
   livecheck do
@@ -11,11 +11,11 @@ class Nexttrace < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.1-rc.1/nexttrace_darwin_amd64"
-      sha256 "894214946fd0f4b51dffc27cd579ad0814dd639b3fadfa6b0a468ac62ab7ad04"
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.2-beta.0/nexttrace_darwin_amd64"
+      sha256 "284759547dbbc7b4f9c3aa4b3a00f5298ce553832ce9aec8359f8131fc9499ee"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.1-rc.1/nexttrace_darwin_arm64"
-      sha256 "1260ad8b2b707cee4d8febd3cbc6dfc4b33f42600b1b8f3e04682d16e959a3e6"
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.2-beta.0/nexttrace_darwin_arm64"
+      sha256 "2801dacbbb4de6ab8a6d923e860dfdfd67f40e88dfeb397c952c648adfebfe57"
     else
       odie "Unsupported macOS architecture for nexttrace"
     end
@@ -23,14 +23,14 @@ class Nexttrace < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.1-rc.1/nexttrace_linux_amd64"
-      sha256 "a40ee4d1d3c8d34cf50227f17b8c72bd9db621ba1d09a63b1badd8f41a9311fd"
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.2-beta.0/nexttrace_linux_amd64"
+      sha256 "8c87ab963a4e608ecce60a1269a97dd1e3e7611a7bd03d344c872faf819f1043"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.1-rc.1/nexttrace_linux_arm64"
-      sha256 "2d28e12711fc9292cec8ab2bd314e0a26d61246a0a74d170ccbf5dd85cb19eb6"
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.2-beta.0/nexttrace_linux_arm64"
+      sha256 "2befb0a5959cecd1a5443a5e68941064fc812fd04d0a072cb63073484f877c16"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.1-rc.1/nexttrace_linux_armv7"
-      sha256 "50fd28f10ce9d5e0c83103598bc480d150ff4584456d12f9699b320847a9fb50"
+      url "https://github.com/nxtrace/NTrace-V1/releases/download/v1.5.2-beta.0/nexttrace_linux_armv7"
+      sha256 "f21bb13d89d68b3dd857f31a95365aecc2fc90e742f6148b2d51bf64c1029408"
     else
       odie "Unsupported Linux architecture for nexttrace"
     end
