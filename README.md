@@ -2,7 +2,13 @@
 
 ## How do I install these formulae?
 
-`brew tap nxtrace/nexttrace` and then `brew install nxtrace/nexttrace/nexttrace`.
+`brew tap nxtrace/nexttrace` and then install the flavor you need:
+
+```bash
+brew install nxtrace/nexttrace/nexttrace
+brew install nxtrace/nexttrace/nexttrace-tiny
+brew install nxtrace/nexttrace/ntr
+```
 
 ## Documentation
 

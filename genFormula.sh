@@ -2,11 +2,9 @@
 
 set -Eeuo pipefail
 
-REPO="nxtrace/NTrace-V1"
-API_URL="https://api.github.com/repos/${REPO}/releases/latest"
-FORMULA_PATH="Formula/nexttrace.rb"
+RELEASE_REPO="${RELEASE_REPO:-nxtrace/NTrace-core}"
+API_URL="https://api.github.com/repos/${RELEASE_REPO}/releases/latest"
 
-# Ensure required tools are present
 for cmd in curl jq; do
   if ! command -v "${cmd}" >/dev/null 2>&1; then
     echo "Missing required command: ${cmd}" >&2
@@ -23,52 +21,92 @@ else
   exit 1
 fi
 
-release_json="$(curl -fsSL "${API_URL}")"
+curl_headers=(-H "Accept: application/vnd.github+json")
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+  curl_headers+=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
+fi
+
+release_json="$(curl -fsSL "${curl_headers[@]}" "${API_URL}")"
 tag_name="$(jq -r '.tag_name // empty' <<<"${release_json}")"
 if [[ -z "${tag_name}" ]]; then
-  echo "Failed to determine latest release tag." >&2
+  echo "Failed to determine latest release tag for ${RELEASE_REPO}." >&2
   exit 1
 fi
 
 version="${tag_name#v}"
-base_url="https://github.com/${REPO}/releases/download/${tag_name}"
+base_url="https://github.com/${RELEASE_REPO}/releases/download/${tag_name}"
+homepage="https://github.com/${RELEASE_REPO}"
 
-declare -A assets=(
-  [darwin_amd64]="${base_url}/nexttrace_darwin_amd64"
-  [darwin_arm64]="${base_url}/nexttrace_darwin_arm64"
-  [linux_amd64]="${base_url}/nexttrace_linux_amd64"
-  [linux_arm64]="${base_url}/nexttrace_linux_arm64"
-)
-
-armv7_asset="${base_url}/nexttrace_linux_armv7"
-if curl -fsI "${armv7_asset}" >/dev/null 2>&1; then
-  assets[linux_armv7]="${armv7_asset}"
-fi
-
+declare -a required_platforms=(darwin_amd64 darwin_arm64 linux_amd64 linux_arm64)
 declare -A shas
-for key in "${!assets[@]}"; do
-  url="${assets[${key}]}"
-  echo "Calculating sha256 for ${key} (${url})" >&2
+declare -A urls
+
+asset_url() {
+  local binary="$1" platform="$2"
+  printf '%s/%s_%s' "${base_url}" "${binary}" "${platform}"
+}
+
+sha256_for_url() {
+  local url="$1"
+  local hash_output
   hash_output="$(curl -fsSL "${url}" | "${CHECKSUM_CMD[@]}")"
-  shas["${key}"]="${hash_output%% *}"
-  if [[ -z "${shas[${key}]}" ]]; then
-    echo "Failed to compute sha256 for ${url}" >&2
-    exit 1
+  printf '%s' "${hash_output%% *}"
+}
+
+collect_assets() {
+  local binary="$1"
+  local platform url hash key
+
+  for platform in "${required_platforms[@]}"; do
+    url="$(asset_url "${binary}" "${platform}")"
+    echo "Calculating sha256 for ${binary} ${platform} (${url})" >&2
+    hash="$(sha256_for_url "${url}")"
+    if [[ -z "${hash}" ]]; then
+      echo "Failed to compute sha256 for ${url}" >&2
+      exit 1
+    fi
+    key="${binary}:${platform}"
+    urls["${key}"]="${url}"
+    shas["${key}"]="${hash}"
+  done
+
+  platform="linux_armv7"
+  url="$(asset_url "${binary}" "${platform}")"
+  if curl -fsI "${url}" >/dev/null 2>&1; then
+    echo "Calculating sha256 for ${binary} ${platform} (${url})" >&2
+    hash="$(sha256_for_url "${url}")"
+    if [[ -z "${hash}" ]]; then
+      echo "Failed to compute sha256 for ${url}" >&2
+      exit 1
+    fi
+    key="${binary}:${platform}"
+    urls["${key}"]="${url}"
+    shas["${key}"]="${hash}"
   fi
-done
+}
 
-mkdir -p "$(dirname "${FORMULA_PATH}")"
+formula_path_for() {
+  local formula_name="$1"
+  printf 'Formula/%s.rb' "${formula_name}"
+}
 
-printf -v linux_arm_block '    else\n      odie "Unsupported Linux architecture for nexttrace"\n    end'
-if [[ -n "${shas[linux_armv7]:-}" ]]; then
-  printf -v linux_arm_block '    elsif Hardware::CPU.arm?\n      url "%s"\n      sha256 "%s"\n    else\n      odie "Unsupported Linux architecture for nexttrace"\n    end' \
-    "${assets[linux_armv7]}" "${shas[linux_armv7]}"
-fi
+render_formula() {
+  local formula_name="$1" class_name="$2" binary="$3" desc="$4"
+  local formula_path linux_arm_block
 
-cat >"${FORMULA_PATH}" <<EOF
-class Nexttrace < Formula
-  desc "An open source visual route tracking CLI tool"
-  homepage "https://github.com/nxtrace/NTrace-V1"
+  formula_path="$(formula_path_for "${formula_name}")"
+  mkdir -p "$(dirname "${formula_path}")"
+
+  printf -v linux_arm_block '    else\n      odie "Unsupported Linux architecture for %s"\n    end' "${binary}"
+  if [[ -n "${shas[${binary}:linux_armv7]:-}" ]]; then
+    printf -v linux_arm_block '    elsif Hardware::CPU.arm?\n      url "%s"\n      sha256 "%s"\n    else\n      odie "Unsupported Linux architecture for %s"\n    end' \
+      "${urls[${binary}:linux_armv7]}" "${shas[${binary}:linux_armv7]}" "${binary}"
+  fi
+
+  cat >"${formula_path}" <<EOF
+class ${class_name} < Formula
+  desc "${desc}"
+  homepage "${homepage}"
   version "${version}"
   license "GPL-3.0"
 
@@ -79,37 +117,54 @@ class Nexttrace < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "${assets[darwin_amd64]}"
-      sha256 "${shas[darwin_amd64]}"
+      url "${urls[${binary}:darwin_amd64]}"
+      sha256 "${shas[${binary}:darwin_amd64]}"
     elsif Hardware::CPU.arm?
-      url "${assets[darwin_arm64]}"
-      sha256 "${shas[darwin_arm64]}"
+      url "${urls[${binary}:darwin_arm64]}"
+      sha256 "${shas[${binary}:darwin_arm64]}"
     else
-      odie "Unsupported macOS architecture for nexttrace"
+      odie "Unsupported macOS architecture for ${binary}"
     end
   end
 
   on_linux do
     if Hardware::CPU.intel?
-      url "${assets[linux_amd64]}"
-      sha256 "${shas[linux_amd64]}"
+      url "${urls[${binary}:linux_amd64]}"
+      sha256 "${shas[${binary}:linux_amd64]}"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "${assets[linux_arm64]}"
-      sha256 "${shas[linux_arm64]}"
+      url "${urls[${binary}:linux_arm64]}"
+      sha256 "${shas[${binary}:linux_arm64]}"
 ${linux_arm_block}
   end
 
   def install
-    binary = Dir["nexttrace_*"].first
-    odie "nexttrace binary not found" unless binary
-    chmod 0o755, binary
-    bin.install binary => "nexttrace"
+    binary = Dir["${binary}_*"].first
+    odie "${binary} binary not found" unless binary
+    chmod 0755, binary
+    bin.install binary => "${binary}"
   end
 
   test do
-    assert_match "NextTrace", shell_output("#{bin}/nexttrace -V")
+    assert_match "NextTrace", shell_output("#{bin}/${binary} -V")
   end
 end
 EOF
 
-echo "Updated ${FORMULA_PATH} for ${tag_name}" >&2
+  echo "Updated ${formula_path} for ${tag_name}" >&2
+}
+
+declare -a flavors=(
+  "nexttrace|Nexttrace|nexttrace|Open source visual route tracking CLI tool"
+  "nexttrace-tiny|NexttraceTiny|nexttrace-tiny|Lightweight NextTrace traceroute CLI"
+  "ntr|Ntr|ntr|MTR-focused NextTrace CLI"
+)
+
+for flavor in "${flavors[@]}"; do
+  IFS='|' read -r _ class_name binary desc <<<"${flavor}"
+  collect_assets "${binary}"
+done
+
+for flavor in "${flavors[@]}"; do
+  IFS='|' read -r formula_name class_name binary desc <<<"${flavor}"
+  render_formula "${formula_name}" "${class_name}" "${binary}" "${desc}"
+done
