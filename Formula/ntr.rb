@@ -1,7 +1,7 @@
 class Ntr < Formula
   desc "MTR-focused NextTrace CLI"
   homepage "https://github.com/nxtrace/NTrace-core"
-  version "1.7.0"
+  version "1.7.1"
   license "GPL-3.0"
 
   livecheck do
@@ -11,11 +11,11 @@ class Ntr < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.0/ntr_darwin_amd64"
-      sha256 "14a0674d99f542bfa3956488d98b67d402d27518360c474d03938165b169642d"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.1/ntr_darwin_amd64"
+      sha256 "60fbb51e3b2b5f4897a9efbc669e161c18de853e4e0a238033e3e2a80b525d00"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.0/ntr_darwin_arm64"
-      sha256 "538f430dc8066975ab0cd805c8de18a9a9d49d201e08958dc0a5e67f7f5188a0"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.1/ntr_darwin_arm64"
+      sha256 "7dcd9b340fcf0ffd71005cee0abc7b3cde2489b1df854cf4a41c07ac4dc5734d"
     else
       odie "Unsupported macOS architecture for ntr"
     end
@@ -23,14 +23,14 @@ class Ntr < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.0/ntr_linux_amd64"
-      sha256 "3f60c9c5fd07b26e9d7cbf7a6d2c194ba3a89c9faa3a1093c5a8b01544e24e05"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.1/ntr_linux_amd64"
+      sha256 "e8cfb70dd0cde9364262e91dde5321c0d4f0d79b7d44c2982d680a6ea8a5e5f6"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.0/ntr_linux_arm64"
-      sha256 "dc330965545cc175278014a0cf7a87792a9731e3ed277d3cd7648ac33913e2e6"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.1/ntr_linux_arm64"
+      sha256 "e4e4dda497c0f74c7eb0c9e3581030c2f93c871c863cccc37a9e71d09082fd2c"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.0/ntr_linux_armv7"
-      sha256 "1a9354e4f87d8ad97aa70c472bd9dc03c84b7fff5716026f985cf224b879c5d4"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.1/ntr_linux_armv7"
+      sha256 "6dfcec9ee30aae8862a2a4cd4946a29afcf79f6ce4967bc174ce8d913bd36b14"
     else
       odie "Unsupported Linux architecture for ntr"
     end
