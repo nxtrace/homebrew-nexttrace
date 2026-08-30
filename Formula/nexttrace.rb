@@ -1,7 +1,7 @@
 class Nexttrace < Formula
   desc "Open source visual route tracking CLI tool"
   homepage "https://github.com/nxtrace/NTrace-core"
-  version "1.7.2"
+  version "1.7.3"
   license "GPL-3.0"
 
   livecheck do
@@ -11,11 +11,11 @@ class Nexttrace < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.2/nexttrace_darwin_amd64"
-      sha256 "f7e0a1a596565223863fce9eb80a339228b18a149d1b937479690d398f5d9afc"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace_darwin_amd64"
+      sha256 "0c266dea69e718e6cbbce642a0ec0ff3c513a47298e864906aa9229252e91fb3"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.2/nexttrace_darwin_arm64"
-      sha256 "65fbed771b25082c4eaa81def0953834f3b7db353a5f8d136bebd1978e6115a6"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace_darwin_arm64"
+      sha256 "32d6ea209beedab088ba4e954d7e28d6bf2561991baf92633a684d1e37c2a0d1"
     else
       odie "Unsupported macOS architecture for nexttrace"
     end
@@ -23,14 +23,14 @@ class Nexttrace < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.2/nexttrace_linux_amd64"
-      sha256 "efaa5399e25a1ab174055546d6e3b8c54d454d453a53587f19b6024ea78c78b5"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace_linux_amd64"
+      sha256 "aa75440fcdee46c16d941f48f9dabee1eb4c35bea6b739b0960fcf8307088c29"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.2/nexttrace_linux_arm64"
-      sha256 "154a4dd4d7666bffc7dcbb313d95b2246e4142f367bc1636f557ee0c23af5c12"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace_linux_arm64"
+      sha256 "4fbf436e2d4737e4a491e71ce3cd140a7a268d43ec94fb9ac9497aec7eda080e"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.2/nexttrace_linux_armv7"
-      sha256 "0021146587700bce4f45a88d04d7aa14a0d499f1d3c7e751bf0937351b6bfaba"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace_linux_armv7"
+      sha256 "d7741bd54a5cae13acf5decb6576216fb355f9dfbcb830b29aea092e08606979"
     else
       odie "Unsupported Linux architecture for nexttrace"
     end
