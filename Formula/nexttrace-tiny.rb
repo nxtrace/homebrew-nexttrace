@@ -1,7 +1,7 @@
 class NexttraceTiny < Formula
   desc "Lightweight NextTrace traceroute CLI"
   homepage "https://github.com/nxtrace/NTrace-core"
-  version "1.7.3"
+  version "1.7.4"
   license "GPL-3.0"
 
   livecheck do
@@ -11,11 +11,11 @@ class NexttraceTiny < Formula
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace-tiny_darwin_amd64"
-      sha256 "53f1832ed400d73f3d2fce7ec8c42498061f7ba04f552d73291f87961afbefd5"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.4/nexttrace-tiny_darwin_amd64"
+      sha256 "6083e70a3602d9e8acf49b31c96c2314dd3b8e335f0adbca69456090552a7e5f"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace-tiny_darwin_arm64"
-      sha256 "56916ba98379e0bb227338cbad326624d3ac74e1f32da033bce55c8cf09a88d8"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.4/nexttrace-tiny_darwin_arm64"
+      sha256 "59b587186c679167077a173b63514d9d630003ca7f91c141347a8977420cf935"
     else
       odie "Unsupported macOS architecture for nexttrace-tiny"
     end
@@ -23,14 +23,14 @@ class NexttraceTiny < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace-tiny_linux_amd64"
-      sha256 "52b4a69aa2108332f53ca2e73ffdb2937cb6cf80a6f1730765fe2209ca720f7d"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.4/nexttrace-tiny_linux_amd64"
+      sha256 "68b6a2210724a4b9439d9337ac69bf17fc7d662002a9a9dbdc5b96c1ab44ca26"
     elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace-tiny_linux_arm64"
-      sha256 "10c8a06c9f516b737c82a2c7ce6571e3a1165bf420805b508f384af277f31147"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.4/nexttrace-tiny_linux_arm64"
+      sha256 "ce8fb581c2bd30a157aec4a38e5c0fa1c79eac3b761a978146267b6ae1c678e3"
     elsif Hardware::CPU.arm?
-      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.3/nexttrace-tiny_linux_armv7"
-      sha256 "4063e34bfb2bea50a9f2bdb141c27f8d94b8d052036c4989a532beadd3954162"
+      url "https://github.com/nxtrace/NTrace-core/releases/download/v1.7.4/nexttrace-tiny_linux_armv7"
+      sha256 "9b054d8575795741c9a0d79cdb499e229e7bc718f823940065bd8223ed53dbce"
     else
       odie "Unsupported Linux architecture for nexttrace-tiny"
     end
